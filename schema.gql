@@ -1,0 +1,11 @@
+type Room {
+  name: String! @unique
+  description: String
+  max: Int!
+  private: Boolean!
+  password: String
+}
+
+type Query {
+  allRooms: [Room!]
+}

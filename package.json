@@ -4,23 +4,39 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "gen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
+    "@apollo/client": "^3.2.9",
     "@chakra-ui/icons": "^1.0.0",
     "@chakra-ui/react": "^1.0.0",
     "@chakra-ui/theme-tools": "1.0.0",
     "@emotion/react": "11.1.1",
     "@emotion/styled": "11.0.0",
+    "formik": "^2.2.5",
     "framer-motion": "^2.9.4",
+    "graphql": "^15.4.0",
     "next": "latest",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "react-icons": "^4.1.0",
+    "simple-peer": "^9.9.3",
+    "socket.io-client": "^3.0.3",
+    "uuid": "^8.3.1",
+    "yup": "^0.31.1"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "1.19.3",
+    "@graphql-codegen/typescript": "1.18.1",
+    "@graphql-codegen/typescript-operations": "1.17.12",
+    "@graphql-codegen/typescript-react-apollo": "2.2.1",
     "@types/node": "^14.6.0",
     "@types/react": "^16.9.46",
     "@types/react-dom": "^16.9.8",
+    "@types/simple-peer": "^9.6.1",
+    "@types/uuid": "^8.3.0",
+    "@types/yup": "^0.29.9",
     "typescript": "4.0.5"
   },
   "license": "MIT"

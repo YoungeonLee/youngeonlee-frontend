@@ -1,0 +1,10 @@
+query Rooms {
+  rooms {
+    id
+    roomName
+    description
+    currentUsers
+    maxPeople
+    private
+  }
+}

@@ -1,0 +1,8 @@
+mutation CreateRoom($userInput: RoomInput!) {
+  createRoom(input: $userInput) {
+    roomName
+    description
+    maxPeople
+    private
+  }
+}
