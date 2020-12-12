@@ -5,6 +5,9 @@ import theme from '../theme'
 
 const client = new ApolloClient({
   uri: process.env.NEXT_PUBLIC_BACKEND_URL,
+  headers: {
+    'Access-Control-Allow-Origin': process.env.FRONTEND_URL!,
+  },
   cache: new InMemoryCache(),
 })
 
