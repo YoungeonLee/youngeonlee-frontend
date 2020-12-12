@@ -4,7 +4,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import theme from '../theme'
 
 const client = new ApolloClient({
-  uri: process.env.NEXT_PUBLIC_BACKEND_URL,
+  uri: process.env.NEXT_PUBLIC_BACKEND_URL + '/graphql',
   headers: {
     'Access-Control-Allow-Origin': process.env.FRONTEND_URL!,
   },
