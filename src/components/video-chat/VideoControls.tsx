@@ -26,6 +26,7 @@ import {
   RiPictureInPicture2Line,
   RiPictureInPictureExitLine,
 } from 'react-icons/ri'
+import { MdScreenShare, MdStopScreenShare } from 'react-icons/md'
 
 export type ButtonTypes =
   | 'mute'
@@ -33,16 +34,21 @@ export type ButtonTypes =
   | 'speaker'
   | 'pictureInPicture'
   | 'fullScreen'
+  | 'screenShare'
 
 interface VideoControlProps {
   size: string | number
   buttons: ButtonTypes[]
+  startScreenShare?: () => Promise<boolean>
+  stopScreenShare?: () => void
 }
 
 type ToggleFunction = (
   video: HTMLVideoElement,
   on: boolean,
-  setOn: React.Dispatch<React.SetStateAction<boolean>>
+  setOn: React.Dispatch<React.SetStateAction<boolean>>,
+  startScreenShare?: () => Promise<boolean>,
+  stopScreenShare?: () => void
 ) => void
 
 let toggleMute: ToggleFunction = function (video, on, setOn) {
@@ -83,6 +89,24 @@ let toggleFullScreen: ToggleFunction = function (video, on, setOn) {
     })
   } else {
     document.exitFullscreen()
+    setOn((prev) => !prev)
+  }
+}
+
+let toggleScreenShare: ToggleFunction = async function (
+  _,
+  on,
+  setOn,
+  startScreenShare,
+  stopScreenShare
+) {
+  if (on) {
+    const success = await startScreenShare!()
+    if (success) {
+      setOn((prev) => !prev)
+    }
+  } else {
+    stopScreenShare!()
     setOn((prev) => !prev)
   }
 }
@@ -142,6 +166,20 @@ export default function VideoControls(props: VideoControlProps) {
                 offLabel="exit fullscreen"
               />
             )
+          case 'screenShare':
+            return (
+              <ToggleIcon
+                key={index}
+                on={MdScreenShare}
+                off={MdStopScreenShare}
+                size={props.size}
+                fn={toggleScreenShare}
+                onLabel="screen share"
+                offLabel="exit screen share"
+                startScreenShare={props.startScreenShare}
+                stopScreenShare={props.stopScreenShare}
+              />
+            )
         }
       })}
     </HStack>
@@ -155,6 +193,8 @@ interface ToggleIconProps {
   fn: ToggleFunction
   onLabel: string
   offLabel: string
+  startScreenShare?: () => Promise<boolean>
+  stopScreenShare?: () => void
 }
 
 function ToggleIcon(props: ToggleIconProps) {
@@ -171,7 +211,17 @@ function ToggleIcon(props: ToggleIconProps) {
 
   const toggle = useCallback(() => {
     if (videoRef.current) {
-      props.fn(videoRef.current, on, setOn)
+      if (props.startScreenShare && props.stopScreenShare) {
+        props.fn(
+          videoRef.current,
+          on,
+          setOn,
+          props.startScreenShare,
+          props.stopScreenShare
+        )
+      } else {
+        props.fn(videoRef.current, on, setOn)
+      }
     }
   }, [on, props.fn])
 

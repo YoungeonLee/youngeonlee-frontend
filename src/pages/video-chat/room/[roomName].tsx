@@ -51,14 +51,41 @@ export default function Room() {
   const userScreenRef = useRef<MediaStream | undefined>(undefined)
   console.log('Peers: ', peers.current)
 
-  function startScreenShare() {
-    ;(navigator.mediaDevices as any)
-      .getDisplayMedia({ audio: false, video: true })
-      .then((stream: MediaStream) => {
-        stream.addTrack(userStreamRef.current!.getAudioTracks()[0])
-        userScreenRef.current = stream
-        setStream(stream)
+  async function startScreenShare() {
+    try {
+      const stream: MediaStream = await (navigator.mediaDevices as any).getDisplayMedia(
+        { audio: false, video: true }
+      )
+      stream.addTrack(userStreamRef.current!.getAudioTracks()[0])
+      userScreenRef.current = stream
+      setStream(stream)
+      Object.keys(peers.current).forEach((value) => {
+        peers.current[value].replaceTrack(
+          userStreamRef.current!.getVideoTracks()[0],
+          stream.getVideoTracks()[0],
+          userStreamRef.current!
+        )
       })
+      return true
+    } catch (err) {
+      alert(err)
+      return false
+    }
+  }
+
+  function stopScreenShare() {
+    setStream(userStreamRef.current!)
+    Object.keys(peers.current).forEach((value) => {
+      peers.current[value].replaceTrack(
+        userScreenRef.current!.getVideoTracks()[0],
+        userStreamRef.current!.getVideoTracks()[0],
+        userStreamRef.current!
+      )
+    })
+    userScreenRef.current?.getTracks().forEach(function (track) {
+      track.stop()
+    })
+    userScreenRef.current = undefined
   }
 
   function sendChat(e: KeyboardEvent<HTMLInputElement>) {
@@ -417,14 +444,11 @@ export default function Room() {
           justify="space-between"
           align="unset"
         >
-          <UserMedia stream={stream} />
-          <Button
-            onClick={() => {
-              startScreenShare()
-            }}
-          >
-            Screen Share
-          </Button>
+          <UserMedia
+            stream={stream}
+            startScreenShare={startScreenShare}
+            stopScreenShare={stopScreenShare}
+          />
           <ChatMessages messages={messages} />
           <ChatInput submit={sendChat} />
         </VStack>

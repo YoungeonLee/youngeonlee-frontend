@@ -2,6 +2,8 @@ import VideoBox from './VideoBox'
 
 interface UserMediaProps {
   stream: MediaStream | null
+  startScreenShare?: () => Promise<boolean>
+  stopScreenShare?: () => void
 }
 
 export default function UserMedia(props: UserMediaProps) {
@@ -10,8 +12,16 @@ export default function UserMedia(props: UserMediaProps) {
       <VideoBox
         stream={props.stream}
         mute
-        buttons={['mute', 'video', 'pictureInPicture', 'fullScreen']}
+        buttons={[
+          'mute',
+          'video',
+          'pictureInPicture',
+          'fullScreen',
+          'screenShare',
+        ]}
         size="unset"
+        startScreenShare={props.startScreenShare}
+        stopScreenShare={props.stopScreenShare}
       />
     )
   }

@@ -7,6 +7,8 @@ interface VideoBoxProps {
   mute: boolean
   buttons: ButtonTypes[]
   size: string
+  startScreenShare?: () => Promise<boolean>
+  stopScreenShare?: () => void
 }
 
 export default function VideoBox(props: VideoBoxProps) {
@@ -25,7 +27,12 @@ export default function VideoBox(props: VideoBoxProps) {
         muted={props.mute}
         style={{ flexGrow: 1, maxHeight: 'calc(100% - 40px)' }}
       />
-      <VideoControls size="2em" buttons={props.buttons} />
+      <VideoControls
+        size="2em"
+        buttons={props.buttons}
+        startScreenShare={props.startScreenShare}
+        stopScreenShare={props.stopScreenShare}
+      />
     </VStack>
   )
 }
