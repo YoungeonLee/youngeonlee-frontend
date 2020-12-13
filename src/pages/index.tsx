@@ -6,7 +6,7 @@ export default function Index() {
     <>
       <Container maxW="lg">
         <Heading textAlign="center" my={8} size="2xl">
-          Welcome to my website! {process.env.NEXT_PUBLIC_BACKEND_URL}
+          Welcome to my website!
         </Heading>
         <Projects />
       </Container>
