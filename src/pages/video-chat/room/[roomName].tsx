@@ -1,4 +1,4 @@
-import { Button, HStack, useColorModeValue, VStack } from '@chakra-ui/react'
+import { HStack, useColorModeValue, VStack } from '@chakra-ui/react'
 import { useRouter } from 'next/dist/client/router'
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
