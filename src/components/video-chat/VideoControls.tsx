@@ -26,7 +26,7 @@ import {
   RiPictureInPicture2Line,
   RiPictureInPictureExitLine,
 } from 'react-icons/ri'
-import { MdScreenShare, MdStopScreenShare } from 'react-icons/md'
+import { FaRegShareSquare } from 'react-icons/fa'
 
 export type ButtonTypes =
   | 'mute'
@@ -170,8 +170,8 @@ export default function VideoControls(props: VideoControlProps) {
             return (
               <ToggleIcon
                 key={index}
-                on={MdScreenShare}
-                off={MdStopScreenShare}
+                on={FaRegShareSquare}
+                off={FaRegShareSquare}
                 size={props.size}
                 fn={toggleScreenShare}
                 onLabel="screen share"

@@ -1,4 +1,5 @@
 import { Heading, Container, Center } from '@chakra-ui/react'
+import { DarkModeSwitch } from '../../components/shared/DarkModeSwitch'
 import CreateRoomForm from '../../components/video-chat/CreateRoomForm'
 import Rooms from '../../components/video-chat/Rooms'
 import { useRoomsQuery } from '../../generated/graphql'
@@ -26,6 +27,7 @@ export default function VideoChat() {
         </Center>
         <Rooms data={data as RoomsQuery} />
       </Container>
+      <DarkModeSwitch />
     </>
   )
 }

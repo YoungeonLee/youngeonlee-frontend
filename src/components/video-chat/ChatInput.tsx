@@ -1,4 +1,4 @@
-import { Box, Input } from '@chakra-ui/react'
+import { Box, Input, useColorModeValue } from '@chakra-ui/react'
 import { KeyboardEvent } from 'react'
 
 interface ChatInputProps {
@@ -6,9 +6,10 @@ interface ChatInputProps {
 }
 
 export default function ChatInput(props: ChatInputProps) {
+  const bg = useColorModeValue('white', 'gray.800')
   return (
     <Box w="full" p={4}>
-      <Input placeholder="Type here" bg="white" onKeyDown={props.submit} />
+      <Input placeholder="Type here" bg={bg} onKeyDown={props.submit} />
     </Box>
   )
 }

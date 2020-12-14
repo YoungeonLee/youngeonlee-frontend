@@ -49,8 +49,8 @@ function Room(props: RoomProps) {
         <Box my={1}>{props.description}</Box>
         <HStack justify="flex-end" my={1}>
           <NextLink href={props.href}>
-            <Button as="a">
-              More &nbsp; <ArrowForwardIcon />
+            <Button my={1} as="a" colorScheme="blue">
+              Join &nbsp; <ArrowForwardIcon />
             </Button>
           </NextLink>
         </HStack>

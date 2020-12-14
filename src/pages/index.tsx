@@ -1,5 +1,6 @@
 import { Heading, Container } from '@chakra-ui/react'
 import Projects from '../components/Projects'
+import { DarkModeSwitch } from '../components/shared/DarkModeSwitch'
 
 export default function Index() {
   return (
@@ -10,6 +11,7 @@ export default function Index() {
         </Heading>
         <Projects />
       </Container>
+      <DarkModeSwitch />
     </>
   )
 }

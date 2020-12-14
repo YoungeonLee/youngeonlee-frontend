@@ -37,7 +37,7 @@ function Project(props: ProjectProps) {
         <Box my={1}>{props.description}</Box>
         <HStack justify="flex-end" my={1}>
           <NextLink href={props.href}>
-            <Button as="a">
+            <Button my={1} as="a" colorScheme="blue">
               More &nbsp; <ArrowForwardIcon />
             </Button>
           </NextLink>

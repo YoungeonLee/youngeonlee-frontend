@@ -1,4 +1,4 @@
-import { Button, HStack, VStack } from '@chakra-ui/react'
+import { Button, HStack, useColorModeValue, VStack } from '@chakra-ui/react'
 import { useRouter } from 'next/dist/client/router'
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
@@ -10,6 +10,7 @@ import OtherVideos from '../../../components/video-chat/OtherVideos'
 import { objectRemoveKey } from '../../../utils/objectFilter'
 import ChatMessages from '../../../components/video-chat/ChatMessages'
 import ChatInput from '../../../components/video-chat/ChatInput'
+import { DarkModeSwitch } from '../../../components/shared/DarkModeSwitch'
 
 export interface Message {
   text: string
@@ -432,6 +433,7 @@ export default function Room() {
   //     // do nothing if roomName isn't defined
   //   }
   // }, [roomName])
+  const bg = useColorModeValue('gray.100', 'gray.600')
 
   return (
     <>
@@ -439,7 +441,7 @@ export default function Room() {
         <VStack
           h="100%"
           w="5vw"
-          bg="gray.100"
+          bg={bg}
           minW="280px"
           justify="space-between"
           align="unset"
@@ -454,6 +456,7 @@ export default function Room() {
         </VStack>
         <OtherVideos streams={otherStreams} />
       </HStack>
+      <DarkModeSwitch />
     </>
   )
 }
