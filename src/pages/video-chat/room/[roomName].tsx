@@ -1,4 +1,10 @@
-import { HStack, useColorModeValue, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  HStack,
+  IconButton,
+  useColorModeValue,
+  VStack,
+} from '@chakra-ui/react'
 import { useRouter } from 'next/dist/client/router'
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
@@ -11,6 +17,7 @@ import { objectRemoveKey } from '../../../utils/objectFilter'
 import ChatMessages from '../../../components/video-chat/ChatMessages'
 import ChatInput from '../../../components/video-chat/ChatInput'
 import { DarkModeSwitch } from '../../../components/shared/DarkModeSwitch'
+import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons'
 
 export interface Message {
   text: string
@@ -434,26 +441,48 @@ export default function Room() {
   //   }
   // }, [roomName])
   const bg = useColorModeValue('gray.100', 'gray.600')
+  const [open, setOpen] = useState(true)
+  const widget = useRef<HTMLDivElement>(null)
 
   return (
     <>
       <HStack h="100vh" spacing={0}>
-        <VStack
+        <Box
           h="100%"
-          w="5vw"
-          bg={bg}
-          minW="280px"
-          justify="space-between"
-          align="unset"
+          w={open ? '5vw' : '0px'}
+          minW={open ? '280px' : '0px'}
+          pos="relative"
+          ref={widget}
         >
-          <UserMedia
-            stream={stream}
-            startScreenShare={startScreenShare}
-            stopScreenShare={stopScreenShare}
+          <VStack
+            h="100%"
+            w="100%"
+            bg={bg}
+            justify="space-between"
+            align="unset"
+            overflow="hidden"
+          >
+            <UserMedia
+              stream={stream}
+              startScreenShare={startScreenShare}
+              stopScreenShare={stopScreenShare}
+            />
+            <ChatMessages messages={messages} />
+            <ChatInput submit={sendChat} />
+          </VStack>
+          <IconButton
+            onClick={() => {
+              setOpen((prev) => !prev)
+            }}
+            pos="absolute"
+            right="-40px"
+            top={`${(widget.current?.offsetHeight as number) / 2 - 20 || 0}px`}
+            aria-label="Search database"
+            colorScheme="gray"
+            zIndex={100}
+            icon={open ? <ArrowLeftIcon /> : <ArrowRightIcon />}
           />
-          <ChatMessages messages={messages} />
-          <ChatInput submit={sendChat} />
-        </VStack>
+        </Box>
         <OtherVideos streams={otherStreams} />
       </HStack>
       <DarkModeSwitch />
