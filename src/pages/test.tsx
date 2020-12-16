@@ -6,7 +6,7 @@ export default function Test() {
   useEffect(() => {
     if (videoRef.current) {
       navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
+        .getUserMedia({ video: true, audio: false })
         .then((stream) => (videoRef.current!.srcObject = stream))
     }
   }, [videoRef.current])
