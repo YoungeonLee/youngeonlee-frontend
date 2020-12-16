@@ -11,7 +11,7 @@ export default function UserMedia(props: UserMediaProps) {
     return (
       <VideoBox
         stream={props.stream}
-        mute={false}
+        mute
         buttons={[
           'mute',
           'video',
@@ -20,6 +20,7 @@ export default function UserMedia(props: UserMediaProps) {
           'screenShare',
         ]}
         size="unset"
+        key="user"
         startScreenShare={props.startScreenShare}
         stopScreenShare={props.stopScreenShare}
       />
