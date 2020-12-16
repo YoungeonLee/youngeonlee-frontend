@@ -12,7 +12,7 @@ export default function Test() {
   }, [videoRef.current])
   return (
     <>
-      <video ref={videoRef} />
+      <video ref={videoRef} autoPlay playsInline muted />
       <Button
         onClick={() => {
           ;(videoRef.current as any).requestPictureInPicture()
