@@ -11,7 +11,7 @@ export default function UserMedia(props: UserMediaProps) {
     return (
       <VideoBox
         stream={props.stream}
-        mute
+        mute={false}
         buttons={[
           'mute',
           'video',
