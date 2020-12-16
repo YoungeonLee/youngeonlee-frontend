@@ -63,6 +63,8 @@ let toggleVideo: ToggleFunction = function (video, on, setOn) {
 
 let togglePictureInPicture: ToggleFunction = function (video, on, setOn) {
   if (on) {
+    console.log(video)
+
     ;(video as any).requestPictureInPicture()
     setOn((prev) => !prev)
     ;(video as any).addEventListener(
