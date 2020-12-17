@@ -230,7 +230,7 @@ export default function Room() {
 
   // join video call
   useEffect(() => {
-    if (secretKey) {
+    if (secretKey && userStreamRef.current) {
       socketRef.current!.emit('join-video', secretKey)
       console.log('emitted join video')
 
@@ -291,7 +291,7 @@ export default function Room() {
         }
       )
     }
-  }, [secretKey])
+  }, [secretKey, userStreamRef.current])
 
   const bg = useColorModeValue('gray.100', 'gray.600')
   const [open, setOpen] = useState(true)
