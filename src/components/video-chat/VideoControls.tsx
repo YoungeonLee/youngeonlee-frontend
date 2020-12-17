@@ -64,7 +64,11 @@ let toggleVideo: ToggleFunction = function (video, on, setOn) {
 
 let togglePictureInPicture: ToggleFunction = function (video, on, setOn) {
   if (on) {
-    ;(video as any).requestPictureInPicture()
+    try {
+      ;(video as any).requestPictureInPicture()
+    } catch (err) {
+      alert(err)
+    }
     setOn((prev) => !prev)
     ;(video as any).addEventListener(
       'leavepictureinpicture',
@@ -74,7 +78,11 @@ let togglePictureInPicture: ToggleFunction = function (video, on, setOn) {
       { once: true }
     )
   } else {
-    ;(document as any).exitPictureInPicture()
+    try {
+      ;(document as any).exitPictureInPicture()
+    } catch (err) {
+      alert(err)
+    }
     setOn((prev) => !prev)
   }
 }
@@ -144,21 +152,17 @@ export default function VideoControls(props: VideoControlProps) {
           case 'speaker':
             return <VolumeIcon key={index} size={props.size} />
           case 'pictureInPicture':
-            if (HTMLElementContains('video', 'requestPictureInPicture')) {
-              return (
-                <ToggleIcon
-                  key={index}
-                  on={RiPictureInPicture2Line}
-                  off={RiPictureInPictureExitLine}
-                  size={props.size}
-                  fn={togglePictureInPicture}
-                  onLabel="picture in picture"
-                  offLabel="exit picture in picture"
-                />
-              )
-            } else {
-              return null
-            }
+            return (
+              <ToggleIcon
+                key={index}
+                on={RiPictureInPicture2Line}
+                off={RiPictureInPictureExitLine}
+                size={props.size}
+                fn={togglePictureInPicture}
+                onLabel="picture in picture"
+                offLabel="exit picture in picture"
+              />
+            )
           case 'fullScreen':
             if (HTMLElementContains('video', 'requestFullscreen')) {
               return (
@@ -177,8 +181,6 @@ export default function VideoControls(props: VideoControlProps) {
             }
 
           case 'screenShare':
-            console.log((navigator.mediaDevices as any).getDisplayMedia)
-
             if ((navigator.mediaDevices as any).getDisplayMedia) {
               return (
                 <ToggleIcon
