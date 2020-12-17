@@ -64,11 +64,7 @@ let toggleVideo: ToggleFunction = function (video, on, setOn) {
 
 let togglePictureInPicture: ToggleFunction = function (video, on, setOn) {
   if (on) {
-    try {
-      ;(video as any).requestPictureInPicture()
-    } catch (err) {
-      alert(err)
-    }
+    ;(video as any).requestPictureInPicture().catch((err: Error) => alert(err))
     setOn((prev) => !prev)
     ;(video as any).addEventListener(
       'leavepictureinpicture',
@@ -78,11 +74,7 @@ let togglePictureInPicture: ToggleFunction = function (video, on, setOn) {
       { once: true }
     )
   } else {
-    try {
-      ;(document as any).exitPictureInPicture()
-    } catch (err) {
-      alert(err)
-    }
+    ;(document as any).exitPictureInPicture().catch((err: Error) => alert(err))
     setOn((prev) => !prev)
   }
 }
