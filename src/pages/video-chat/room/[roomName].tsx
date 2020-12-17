@@ -87,10 +87,10 @@ export default function Room() {
       peers.current[value].replaceTrack(
         userScreenRef.current!.getVideoTracks()[0],
         userStreamRef.current!.getVideoTracks()[0],
-        userScreenRef.current!
+        userStreamRef.current!
       )
     })
-    userScreenRef.current?.getTracks().forEach(function (track) {
+    userScreenRef.current?.getVideoTracks().forEach(function (track) {
       track.stop()
     })
     userScreenRef.current = undefined
