@@ -27,6 +27,7 @@ import {
   RiPictureInPictureExitLine,
 } from 'react-icons/ri'
 import { FaRegShareSquare } from 'react-icons/fa'
+import HTMLElementContains from '../../utils/HTMLElementContains'
 
 export type ButtonTypes =
   | 'mute'
@@ -63,7 +64,6 @@ let toggleVideo: ToggleFunction = function (video, on, setOn) {
 
 let togglePictureInPicture: ToggleFunction = function (video, on, setOn) {
   if (on) {
-    console.log(video)
     ;(video as any).requestPictureInPicture()
     setOn((prev) => !prev)
     ;(video as any).addEventListener(
@@ -156,31 +156,42 @@ export default function VideoControls(props: VideoControlProps) {
               />
             )
           case 'fullScreen':
-            return (
-              <ToggleIcon
-                key={index}
-                on={BiFullscreen}
-                off={BiExitFullscreen}
-                size={props.size}
-                fn={toggleFullScreen}
-                onLabel="fullscreen"
-                offLabel="exit fullscreen"
-              />
-            )
+            if (HTMLElementContains('video', 'requestFullscreen')) {
+              return (
+                <ToggleIcon
+                  key={index}
+                  on={BiFullscreen}
+                  off={BiExitFullscreen}
+                  size={props.size}
+                  fn={toggleFullScreen}
+                  onLabel="fullscreen"
+                  offLabel="exit fullscreen"
+                />
+              )
+            } else {
+              return null
+            }
+
           case 'screenShare':
-            return (
-              <ToggleIcon
-                key={index}
-                on={FaRegShareSquare}
-                off={FaRegShareSquare}
-                size={props.size}
-                fn={toggleScreenShare}
-                onLabel="screen share"
-                offLabel="exit screen share"
-                startScreenShare={props.startScreenShare}
-                stopScreenShare={props.stopScreenShare}
-              />
-            )
+            console.log((navigator.mediaDevices as any).getDisplayMedia)
+
+            if ((navigator.mediaDevices as any).getDisplayMedia) {
+              return (
+                <ToggleIcon
+                  key={index}
+                  on={FaRegShareSquare}
+                  off={FaRegShareSquare}
+                  size={props.size}
+                  fn={toggleScreenShare}
+                  onLabel="screen share"
+                  offLabel="exit screen share"
+                  startScreenShare={props.startScreenShare}
+                  stopScreenShare={props.stopScreenShare}
+                />
+              )
+            } else {
+              return null
+            }
         }
       })}
     </HStack>
