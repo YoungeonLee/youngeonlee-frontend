@@ -144,17 +144,21 @@ export default function VideoControls(props: VideoControlProps) {
           case 'speaker':
             return <VolumeIcon key={index} size={props.size} />
           case 'pictureInPicture':
-            return (
-              <ToggleIcon
-                key={index}
-                on={RiPictureInPicture2Line}
-                off={RiPictureInPictureExitLine}
-                size={props.size}
-                fn={togglePictureInPicture}
-                onLabel="picture in picture"
-                offLabel="exit picture in picture"
-              />
-            )
+            if (HTMLElementContains('video', 'requestPictureInPicture')) {
+              return (
+                <ToggleIcon
+                  key={index}
+                  on={RiPictureInPicture2Line}
+                  off={RiPictureInPictureExitLine}
+                  size={props.size}
+                  fn={togglePictureInPicture}
+                  onLabel="picture in picture"
+                  offLabel="exit picture in picture"
+                />
+              )
+            } else {
+              return null
+            }
           case 'fullScreen':
             if (HTMLElementContains('video', 'requestFullscreen')) {
               return (
