@@ -81,12 +81,7 @@ let togglePictureInPicture: ToggleFunction = function (video, on, setOn) {
 
 let toggleFullScreen: ToggleFunction = function (video, on, setOn) {
   if (on) {
-    if (video.parentElement?.requestFullscreen) {
-      video.parentElement.requestFullscreen()
-    } else {
-      // safari
-      ;(video.parentElement as any).webkitRequestFullscreen()
-    }
+    video.parentElement?.requestFullscreen()
     setOn((prev) => !prev)
     video.parentElement?.addEventListener('fullscreenchange', () => {
       if (!document.fullscreenElement) {
