@@ -87,7 +87,7 @@ export default function Room() {
       peers.current[value].replaceTrack(
         userScreenRef.current!.getVideoTracks()[0],
         userStreamRef.current!.getVideoTracks()[0],
-        userStreamRef.current!
+        userScreenRef.current!
       )
     })
     userScreenRef.current?.getTracks().forEach(function (track) {
