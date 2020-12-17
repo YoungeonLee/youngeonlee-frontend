@@ -48,7 +48,7 @@ export default function Room() {
   const userSettingRef = useRef<UserSetting>(generateUser())
   const [messages, setMessages] = useState<Message[]>([
     {
-      text: `You joined as ${userSettingRef.current.name}`,
+      text: `Joining as ${userSettingRef.current.name}...`,
       color: userSettingRef.current.color,
     },
   ])
@@ -233,6 +233,13 @@ export default function Room() {
     if (secretKey && userStreamRef.current) {
       socketRef.current!.emit('join-video', secretKey)
       console.log('emitted join video')
+      setMessages((prevState) => [
+        ...prevState,
+        {
+          text: `Joined as ${userSettingRef.current.name}`,
+          color: userSettingRef.current.color,
+        },
+      ])
 
       // call user when joined
       socketRef.current!.on('user-video-joined', (socketId: string) => {
