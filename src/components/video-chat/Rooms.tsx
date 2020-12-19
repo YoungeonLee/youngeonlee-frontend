@@ -13,9 +13,7 @@ export default function Rooms(props: RoomsProps) {
   console.log(props.data)
   return (
     <>
-      <Heading ml={32} my={4}>
-        Public Rooms
-      </Heading>
+      <Heading my={4}>Public Rooms</Heading>
       <Wrap justify="center">
         {props.data.rooms.map((room) => (
           <Room

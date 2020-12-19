@@ -27,7 +27,7 @@ export default function CreateRoomForm() {
   const router = useRouter()
   return (
     <>
-      <Button onClick={onOpen} colorScheme="blue">
+      <Button onClick={onOpen} colorScheme="blue" my={4}>
         Create Room
       </Button>
 

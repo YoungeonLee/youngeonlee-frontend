@@ -7,9 +7,7 @@ import NextLink from 'next/link'
 export default function Projects() {
   return (
     <>
-      <Heading ml={32} my={4}>
-        Projects
-      </Heading>
+      <Heading my={4}>Projects</Heading>
       <Wrap justify="center">
         <Project
           title="Video Chat"

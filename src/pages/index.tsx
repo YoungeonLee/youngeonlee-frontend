@@ -5,7 +5,7 @@ import { DarkModeSwitch } from '../components/shared/DarkModeSwitch'
 export default function Index() {
   return (
     <>
-      <Container maxW="lg">
+      <Container>
         <Heading textAlign="center" my={8} size="2xl">
           Welcome to my website!
         </Heading>
