@@ -303,10 +303,11 @@ export default function Room() {
   const bg = useColorModeValue('gray.100', 'gray.600')
   const [open, setOpen] = useState(true)
   const widget = useRef<HTMLDivElement>(null)
+  const innerHeight = window.innerHeight || '100vh'
 
   return (
     <>
-      <HStack h="100vh" spacing={0}>
+      <HStack h={innerHeight} spacing={0}>
         <Box
           h="100%"
           w={open ? '5vw' : '0px'}
