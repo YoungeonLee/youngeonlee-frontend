@@ -18,6 +18,7 @@ import ChatMessages from '../../../components/video-chat/ChatMessages'
 import ChatInput from '../../../components/video-chat/ChatInput'
 import { DarkModeSwitch } from '../../../components/shared/DarkModeSwitch'
 import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons'
+import debounce from '../../../utils/debounce'
 
 export interface Message {
   text: string
@@ -302,9 +303,19 @@ export default function Room() {
 
   const bg = useColorModeValue('gray.100', 'gray.600')
   const [open, setOpen] = useState(true)
-  const widget = useRef<HTMLDivElement>(null)
-  const innerHeight =
-    typeof window !== 'undefined' ? window.innerHeight : '100vh'
+  const [innerHeight, setInnerHeight] = useState<'100vh' | number>('100vh')
+
+  // resize on window change
+  useEffect(() => {
+    const debouncedFunction = debounce(() => {
+      setInnerHeight(window.innerHeight)
+      console.log('innerHeight changed')
+    })
+    window.addEventListener('resize', debouncedFunction)
+    return () => {
+      window.removeEventListener('resize', debouncedFunction)
+    }
+  }, [])
 
   return (
     <>
@@ -314,7 +325,6 @@ export default function Room() {
           w={open ? '5vw' : '0px'}
           minW={open ? '280px' : '0px'}
           pos="relative"
-          ref={widget}
         >
           <VStack
             h="100%"
@@ -338,7 +348,7 @@ export default function Room() {
             }}
             pos="absolute"
             right="-40px"
-            top={`${(widget.current?.offsetHeight as number) / 2 - 20 || 0}px`}
+            top="49%"
             aria-label="Search database"
             colorScheme="gray"
             zIndex={100}
