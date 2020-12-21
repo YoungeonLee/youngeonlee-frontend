@@ -6,7 +6,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/dist/client/router'
-import React, { KeyboardEvent, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
 import UserMedia from '../../../components/video-chat/UserMedia'
 import { ChatUser } from '../../../types'
@@ -19,13 +19,18 @@ import ChatInput from '../../../components/video-chat/ChatInput'
 import { DarkModeSwitch } from '../../../components/shared/DarkModeSwitch'
 import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons'
 import debounce from '../../../utils/debounce'
+import {
+  sendChat,
+  startScreenShare,
+  stopScreenShare,
+} from '../../../utils/video-chat/functions'
 
 export interface Message {
   text: string
   color: string
 }
 
-interface PeerObject {
+export interface PeerObject {
   [id: string]: Instance
 }
 
@@ -33,7 +38,7 @@ export interface StreamObject {
   [id: string]: MediaStream
 }
 
-interface UserSetting {
+export interface UserSetting {
   color: string
   name: string
 }
@@ -54,68 +59,26 @@ export default function Room() {
     },
   ])
   const socketRef = useRef<Socket | null>(null)
-  const [secretKey, setSecretKey] = useState<String | null>(null)
+  const [secretKey, setSecretKey] = useState<string | null>(null)
 
   const userStreamRef = useRef<MediaStream | undefined>(undefined)
   const userScreenRef = useRef<MediaStream | undefined>(undefined)
   console.log('Peers: ', peers.current)
 
-  async function startScreenShare() {
-    try {
-      const stream: MediaStream = await (navigator.mediaDevices as any).getDisplayMedia(
-        { audio: false, video: true }
-      )
-      stream.addTrack(userStreamRef.current!.getAudioTracks()[0])
-      userScreenRef.current = stream
-      setStream(stream)
-      Object.keys(peers.current).forEach((value) => {
-        peers.current[value].replaceTrack(
-          userStreamRef.current!.getVideoTracks()[0],
-          stream.getVideoTracks()[0],
-          userStreamRef.current!
-        )
-      })
-      return true
-    } catch (err) {
-      alert(err)
-      return false
-    }
-  }
+  const startScreenShareCallback = useCallback(async () => {
+    return startScreenShare(userStreamRef, userScreenRef, setStream, peers)
+  }, [peers])
 
-  function stopScreenShare() {
-    setStream(userStreamRef.current!)
-    Object.keys(peers.current).forEach((value) => {
-      peers.current[value].replaceTrack(
-        userScreenRef.current!.getVideoTracks()[0],
-        userStreamRef.current!.getVideoTracks()[0],
-        userStreamRef.current!
-      )
-    })
-    userScreenRef.current?.getVideoTracks().forEach(function (track) {
-      track.stop()
-    })
-    userScreenRef.current = undefined
-  }
+  const stopScreenShareCallback = useCallback(() => {
+    stopScreenShare(userStreamRef, userScreenRef, setStream, peers)
+  }, [peers])
 
-  function sendChat(e: KeyboardEvent<HTMLInputElement>) {
-    const message = e.currentTarget.value
-    if (e.key === 'Enter' && socketRef.current && secretKey && message !== '') {
-      socketRef.current.emit(
-        'send-message',
-        message,
-        userSettingRef.current,
-        secretKey
-      )
-      e.currentTarget.value = ''
-      setMessages((prevState) => [
-        ...prevState,
-        {
-          text: `${userSettingRef.current.name}: ${message}`,
-          color: userSettingRef.current.color,
-        },
-      ])
-    }
-  }
+  const sendChatCallback = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      sendChat(e, socketRef, secretKey, userSettingRef, setMessages)
+    },
+    [secretKey]
+  )
 
   // disable scrolling
   useEffect(() => {
@@ -336,11 +299,11 @@ export default function Room() {
           >
             <UserMedia
               stream={stream}
-              startScreenShare={startScreenShare}
-              stopScreenShare={stopScreenShare}
+              startScreenShare={startScreenShareCallback}
+              stopScreenShare={stopScreenShareCallback}
             />
             <ChatMessages messages={messages} />
-            <ChatInput submit={sendChat} />
+            <ChatInput submit={sendChatCallback} />
           </VStack>
           <IconButton
             onClick={() => {
