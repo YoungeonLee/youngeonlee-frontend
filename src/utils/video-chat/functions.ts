@@ -58,7 +58,7 @@ export function sendChat(
   socketRef: React.MutableRefObject<Socket | null>,
   secretKey: string | null,
   userSettingRef: React.MutableRefObject<UserSetting>,
-  setMessages: (fn: (prevState: Message[]) => Message[], open: boolean) => void
+  setMessages: (fn: (prevState: Message[]) => Message[]) => void
 ) {
   const message = e.currentTarget.value
   if (e.key === 'Enter' && socketRef.current && secretKey && message !== '') {
@@ -69,15 +69,12 @@ export function sendChat(
       secretKey
     )
     e.currentTarget.value = ''
-    setMessages(
-      (prevState) => [
-        ...prevState,
-        {
-          text: `${userSettingRef.current.name}: ${message}`,
-          color: userSettingRef.current.color,
-        },
-      ],
-      true
-    )
+    setMessages((prevState) => [
+      ...prevState,
+      {
+        text: `${userSettingRef.current.name}: ${message}`,
+        color: userSettingRef.current.color,
+      },
+    ])
   }
 }

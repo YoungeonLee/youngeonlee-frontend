@@ -59,9 +59,10 @@ export default function Room() {
     },
   ])
   const [open, setOpen] = useState(true)
+  const openRef = useRef(true)
   function setMessages(fn: (prevState: Message[]) => Message[]) {
     setMessagesState(fn)
-    if (!open) {
+    if (!openRef.current) {
       console.log('not open')
     } else {
       console.log('open')
@@ -325,6 +326,7 @@ export default function Room() {
           <IconButton
             onClick={() => {
               setOpen((prev) => !prev)
+              openRef.current = !openRef.current
             }}
             pos="absolute"
             right="-40px"
