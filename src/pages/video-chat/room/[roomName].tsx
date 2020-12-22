@@ -52,12 +52,22 @@ export default function Room() {
   const peers = useRef<PeerObject>({})
   const [otherStreams, setOtherStreams] = useState<StreamObject>({})
   const userSettingRef = useRef<UserSetting>(generateUser())
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessagesState] = useState<Message[]>([
     {
       text: `Joining as ${userSettingRef.current.name}...`,
       color: userSettingRef.current.color,
     },
   ])
+  const [open, setOpen] = useState(true)
+  function setMessages(fn: (prevState: Message[]) => Message[]) {
+    setMessagesState(fn)
+    if (!open) {
+      console.log('not open')
+    } else {
+      console.log('open')
+    }
+  }
+
   const socketRef = useRef<Socket | null>(null)
   const [secretKey, setSecretKey] = useState<string | null>(null)
 
@@ -77,7 +87,7 @@ export default function Room() {
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       sendChat(e, socketRef, secretKey, userSettingRef, setMessages)
     },
-    [secretKey]
+    [secretKey, open]
   )
 
   // disable scrolling
@@ -136,49 +146,6 @@ export default function Room() {
 
       socket.on('server-error', (msg: string) => alert(msg))
 
-      socket.on('user-joined', (user: ChatUser) => {
-        setMessages((prevState) => [
-          ...prevState,
-          { text: `${user.name} has joined`, color: user.color },
-        ])
-      })
-
-      socket.on(
-        'user-setting-changed',
-        (prevUser: ChatUser, newUser: ChatUser) => {
-          setMessages((prevState) => [
-            ...prevState,
-            {
-              text: `${prevUser.name} has changed to ${newUser.name}`,
-              color: newUser.color,
-            },
-          ])
-        }
-      )
-
-      socket.on('user-disconnected', (user: ChatUser, socketId: string) => {
-        setMessages((prevState) => [
-          ...prevState,
-          { text: `${user.name} has left`, color: user.color },
-        ])
-        console.log('user disconnected', socketId)
-        if (peers.current[socketId]) {
-          peers.current[socketId].destroy()
-          delete peers.current[socketId]
-          setOtherStreams((prev) => {
-            return objectRemoveKey(prev, socketId)
-          })
-        }
-      })
-
-      // handle incoming chat messages
-      socket.on('message', (message: string, user: ChatUser) => {
-        setMessages((prevState) => [
-          ...prevState,
-          { text: `${user.name}: ${message}`, color: user.color },
-        ])
-      })
-
       // when you get secret key join video chat
       socket.on('secret-key', (key: string) => {
         console.log('secret key recieved')
@@ -192,12 +159,63 @@ export default function Room() {
     }
   }, [roomName])
 
+  // sockets events with setMessages need to get reassigned when the function changes
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on('user-joined', (user: ChatUser) => {
+        setMessages((prevState: Message[]) => [
+          ...prevState,
+          { text: `${user.name} has joined`, color: user.color },
+        ])
+      })
+
+      socketRef.current.on(
+        'user-setting-changed',
+        (prevUser: ChatUser, newUser: ChatUser) => {
+          setMessages((prevState: Message[]) => [
+            ...prevState,
+            {
+              text: `${prevUser.name} has changed to ${newUser.name}`,
+              color: newUser.color,
+            },
+          ])
+        }
+      )
+
+      socketRef.current.on(
+        'user-disconnected',
+        (user: ChatUser, socketId: string) => {
+          setMessages((prevState) => [
+            ...prevState,
+            { text: `${user.name} has left`, color: user.color },
+          ])
+          console.log('user disconnected', socketId)
+          if (peers.current[socketId]) {
+            peers.current[socketId].destroy()
+            delete peers.current[socketId]
+            setOtherStreams((prev) => {
+              return objectRemoveKey(prev, socketId)
+            })
+          }
+        }
+      )
+
+      // handle incoming chat messages
+      socketRef.current.on('message', (message: string, user: ChatUser) => {
+        setMessages((prevState: Message[]) => [
+          ...prevState,
+          { text: `${user.name}: ${message}`, color: user.color },
+        ])
+      })
+    }
+  }, [socketRef.current, setMessages])
+
   // join video call
   useEffect(() => {
     if (secretKey && userStreamRef.current) {
       socketRef.current!.emit('join-video', secretKey)
       console.log('emitted join video')
-      setMessages((prevState) => [
+      setMessages((prevState: Message[]) => [
         ...prevState,
         {
           text: `Joined as ${userSettingRef.current.name}`,
@@ -265,7 +283,6 @@ export default function Room() {
   }, [secretKey, userStreamRef.current])
 
   const bg = useColorModeValue('gray.100', 'gray.600')
-  const [open, setOpen] = useState(true)
   const [innerHeight, setInnerHeight] = useState<'100vh' | number>('100vh')
 
   // resize on window change
