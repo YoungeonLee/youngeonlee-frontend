@@ -58,7 +58,7 @@ export function sendChat(
   socketRef: React.MutableRefObject<Socket | null>,
   secretKey: string | null,
   userSettingRef: React.MutableRefObject<UserSetting>,
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>
+  setMessages: (fn: (prevState: Message[]) => Message[]) => void
 ) {
   const message = e.currentTarget.value
   if (e.key === 'Enter' && socketRef.current && secretKey && message !== '') {

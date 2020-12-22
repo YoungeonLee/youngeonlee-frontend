@@ -52,12 +52,22 @@ export default function Room() {
   const peers = useRef<PeerObject>({})
   const [otherStreams, setOtherStreams] = useState<StreamObject>({})
   const userSettingRef = useRef<UserSetting>(generateUser())
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessagesState] = useState<Message[]>([
     {
       text: `Joining as ${userSettingRef.current.name}...`,
       color: userSettingRef.current.color,
     },
   ])
+  const [open, setOpen] = useState(true)
+  const openRef = useRef(true)
+  function setMessages(fn: (prevState: Message[]) => Message[]) {
+    setMessagesState(fn)
+    if (!openRef.current) {
+      console.log('not open')
+    } else {
+      console.log('open')
+    }
+  }
   const socketRef = useRef<Socket | null>(null)
   const [secretKey, setSecretKey] = useState<string | null>(null)
 
@@ -265,7 +275,6 @@ export default function Room() {
   }, [secretKey, userStreamRef.current])
 
   const bg = useColorModeValue('gray.100', 'gray.600')
-  const [open, setOpen] = useState(true)
   const [innerHeight, setInnerHeight] = useState<'100vh' | number>('100vh')
 
   // resize on window change
@@ -308,6 +317,7 @@ export default function Room() {
           <IconButton
             onClick={() => {
               setOpen((prev) => !prev)
+              openRef.current = !openRef.current
             }}
             pos="absolute"
             right="-40px"
