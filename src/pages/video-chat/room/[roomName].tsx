@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   HStack,
   IconButton,
@@ -60,19 +61,26 @@ export default function Room() {
   ])
   const [open, setOpen] = useState(true)
   const openRef = useRef(true)
-  function setMessages(fn: (prevState: Message[]) => Message[]) {
+  const [unreadMessages, setUnreadMessages] = useState(0)
+  const unreadMessagesRef = useRef(0)
+  // for some reason state doesn't work in this callback function (probably related to event listener with socket.io)
+  const setMessages = useCallback((fn: (prevState: Message[]) => Message[]) => {
     setMessagesState(fn)
     if (!openRef.current) {
-      console.log('not open')
+      unreadMessagesRef.current = unreadMessagesRef.current + 1
+      setUnreadMessages(unreadMessagesRef.current)
+      console.log(unreadMessages)
     } else {
       console.log('open')
     }
-  }
+  }, [])
   const socketRef = useRef<Socket | null>(null)
   const [secretKey, setSecretKey] = useState<string | null>(null)
 
   const userStreamRef = useRef<MediaStream | undefined>(undefined)
   const userScreenRef = useRef<MediaStream | undefined>(undefined)
+  const badgeRef = useRef<HTMLSpanElement>(null)
+
   console.log('Peers: ', peers.current)
 
   const startScreenShareCallback = useCallback(async () => {
@@ -183,6 +191,7 @@ export default function Room() {
 
       // handle incoming chat messages
       socket.on('message', (message: string, user: ChatUser) => {
+        console.log(setMessages)
         setMessages((prevState) => [
           ...prevState,
           { text: `${user.name}: ${message}`, color: user.color },
@@ -314,19 +323,42 @@ export default function Room() {
             <ChatMessages messages={messages} />
             <ChatInput submit={sendChatCallback} />
           </VStack>
-          <IconButton
-            onClick={() => {
-              setOpen((prev) => !prev)
-              openRef.current = !openRef.current
-            }}
-            pos="absolute"
-            right="-40px"
-            top="49%"
-            aria-label="Search database"
-            colorScheme="gray"
-            zIndex={100}
-            icon={open ? <ArrowLeftIcon /> : <ArrowRightIcon />}
-          />
+          <Box pos="absolute" right="-40px" top="49%">
+            <IconButton
+              onClick={() => {
+                setOpen((prev) => !prev)
+                openRef.current = !openRef.current
+                // mark all messages to be read
+                if (openRef.current) {
+                  unreadMessagesRef.current = 0
+                }
+              }}
+              aria-label="Search database"
+              colorScheme="gray"
+              zIndex={100}
+              icon={open ? <ArrowLeftIcon /> : <ArrowRightIcon />}
+            />
+            <Badge
+              ref={badgeRef}
+              colorScheme="red"
+              pos="absolute"
+              right={
+                badgeRef.current
+                  ? `${-badgeRef.current.clientWidth / 2}px`
+                  : '0px'
+              }
+              top={
+                badgeRef.current
+                  ? `${-badgeRef.current.clientHeight / 2}px`
+                  : '0px'
+              }
+              zIndex={101}
+            >
+              {unreadMessagesRef.current !== 0
+                ? unreadMessagesRef.current
+                : null}
+            </Badge>
+          </Box>
         </Box>
         <OtherVideos streams={otherStreams} />
       </HStack>
