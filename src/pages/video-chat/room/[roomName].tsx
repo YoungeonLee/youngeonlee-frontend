@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   HStack,
+  Icon,
   IconButton,
   useColorModeValue,
   VStack,
@@ -25,6 +26,7 @@ import {
   startScreenShare,
   stopScreenShare,
 } from '../../../utils/video-chat/functions'
+import { VscCircleFilled } from 'react-icons/vsc'
 
 export interface Message {
   text: string
@@ -63,17 +65,26 @@ export default function Room() {
   const openRef = useRef(true)
   const [unreadMessages, setUnreadMessages] = useState(0)
   const unreadMessagesRef = useRef(0)
+  const [newUnreadMessage, setNewUnreadMessage] = useState<Message | null>(null)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   // for some reason state doesn't work in this callback function (probably related to event listener with socket.io)
-  const setMessages = useCallback((fn: (prevState: Message[]) => Message[]) => {
-    setMessagesState(fn)
+  const setMessages = useCallback((message: Message) => {
+    setMessagesState((prevState) => [...prevState, message])
     if (!openRef.current) {
       unreadMessagesRef.current = unreadMessagesRef.current + 1
       setUnreadMessages(unreadMessagesRef.current)
+      setNewUnreadMessage(message)
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+      timeoutRef.current = setTimeout(() => {
+        setNewUnreadMessage(null)
+      }, 3000)
       console.log(unreadMessages)
     } else {
-      console.log('open')
     }
   }, [])
+
   const socketRef = useRef<Socket | null>(null)
   const [secretKey, setSecretKey] = useState<string | null>(null)
 
@@ -155,30 +166,21 @@ export default function Room() {
       socket.on('server-error', (msg: string) => alert(msg))
 
       socket.on('user-joined', (user: ChatUser) => {
-        setMessages((prevState) => [
-          ...prevState,
-          { text: `${user.name} has joined`, color: user.color },
-        ])
+        setMessages({ text: `${user.name} has joined`, color: user.color })
       })
 
       socket.on(
         'user-setting-changed',
         (prevUser: ChatUser, newUser: ChatUser) => {
-          setMessages((prevState) => [
-            ...prevState,
-            {
-              text: `${prevUser.name} has changed to ${newUser.name}`,
-              color: newUser.color,
-            },
-          ])
+          setMessages({
+            text: `${prevUser.name} has changed to ${newUser.name}`,
+            color: newUser.color,
+          })
         }
       )
 
       socket.on('user-disconnected', (user: ChatUser, socketId: string) => {
-        setMessages((prevState) => [
-          ...prevState,
-          { text: `${user.name} has left`, color: user.color },
-        ])
+        setMessages({ text: `${user.name} has left`, color: user.color })
         console.log('user disconnected', socketId)
         if (peers.current[socketId]) {
           peers.current[socketId].destroy()
@@ -192,10 +194,7 @@ export default function Room() {
       // handle incoming chat messages
       socket.on('message', (message: string, user: ChatUser) => {
         console.log(setMessages)
-        setMessages((prevState) => [
-          ...prevState,
-          { text: `${user.name}: ${message}`, color: user.color },
-        ])
+        setMessages({ text: `${user.name}: ${message}`, color: user.color })
       })
 
       // when you get secret key join video chat
@@ -216,13 +215,10 @@ export default function Room() {
     if (secretKey && userStreamRef.current) {
       socketRef.current!.emit('join-video', secretKey)
       console.log('emitted join video')
-      setMessages((prevState) => [
-        ...prevState,
-        {
-          text: `Joined as ${userSettingRef.current.name}`,
-          color: userSettingRef.current.color,
-        },
-      ])
+      setMessages({
+        text: `Joined as ${userSettingRef.current.name}`,
+        color: userSettingRef.current.color,
+      })
 
       // call user when joined
       socketRef.current!.on('user-video-joined', (socketId: string) => {
@@ -331,6 +327,7 @@ export default function Room() {
                 // mark all messages to be read
                 if (openRef.current) {
                   unreadMessagesRef.current = 0
+                  setNewUnreadMessage(null)
                 }
               }}
               aria-label="Search database"
@@ -358,6 +355,28 @@ export default function Room() {
                 ? unreadMessagesRef.current
                 : null}
             </Badge>
+            <Box
+              pos="absolute"
+              left="100%"
+              top="50%"
+              ml={1}
+              borderRadius="lg"
+              overflow="hidden"
+              bg={bg}
+              pl={1}
+              pr={2}
+            >
+              {newUnreadMessage ? (
+                <Box maxW="sm" isTruncated>
+                  <Icon
+                    as={VscCircleFilled}
+                    color={newUnreadMessage.color}
+                    mb={1}
+                  />
+                  {newUnreadMessage!.text}
+                </Box>
+              ) : null}
+            </Box>
           </Box>
         </Box>
         <OtherVideos streams={otherStreams} />
