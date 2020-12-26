@@ -17,7 +17,7 @@ export default function Rooms(props: RoomsProps) {
       <Wrap justify="center">
         {props.data.rooms.map((room) => (
           <Room
-            key={room.roomName}
+            key={room.id}
             title={room.roomName}
             description={room.description}
             status={`${room.currentUsers}/${room.maxPeople}`}

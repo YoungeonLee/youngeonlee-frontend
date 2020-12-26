@@ -1,4 +1,10 @@
-import { Box, HStack, useColorModeValue, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  HStack,
+  useColorModeValue,
+  useDisclosure,
+  VStack,
+} from '@chakra-ui/react'
 import { useRouter } from 'next/dist/client/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
@@ -18,6 +24,7 @@ import {
   stopScreenShare,
 } from '../../../utils/video-chat/functions'
 import ChatOpenCloseButton from '../../../components/video-chat/ChatOpenCloseButton'
+import PromptPassword from '../../../components/video-chat/PromptPassword'
 
 export interface Message {
   text: string
@@ -58,6 +65,12 @@ export default function Room() {
   const unreadMessagesRef = useRef(0)
   const [newUnreadMessage, setNewUnreadMessage] = useState<Message | null>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const {
+    isOpen: passwordIsOpen,
+    onOpen: onPasswordOpen,
+    onClose: onPasswordClose,
+  } = useDisclosure()
+
   // for some reason state doesn't work in this callback function (probably related to event listener with socket.io)
   const setMessages = useCallback((message: Message) => {
     setMessagesState((prevState) => [...prevState, message])
@@ -140,7 +153,8 @@ export default function Room() {
           'join-room',
           roomName,
           userSettingRef.current,
-          localStorage.getItem('video-chat-creatorKey')
+          localStorage.getItem('video-chat-creatorKey'),
+          ''
         )
         localStorage.removeItem('video-chat-creatorKey')
       })
@@ -187,10 +201,17 @@ export default function Room() {
         setMessages({ text: `${user.name}: ${message}`, color: user.color })
       })
 
+      // prompt password for private room
+      socket.on('password-required', () => {
+        onPasswordOpen()
+      })
+
       // when you get secret key join video chat
       socket.on('secret-key', (key: string) => {
         console.log('secret key recieved')
         setSecretKey(key)
+        // close password prompt
+        onPasswordClose()
       })
 
       return () => {
@@ -321,6 +342,13 @@ export default function Room() {
         </Box>
         <OtherVideos streams={otherStreams} />
       </HStack>
+      <PromptPassword
+        isOpen={passwordIsOpen}
+        onClose={onPasswordClose}
+        socketRef={socketRef}
+        roomName={roomName}
+        userSettingRef={userSettingRef}
+      />
       <DarkModeSwitch />
     </>
   )

@@ -35,7 +35,6 @@ export function CustomInputField({ label, ...props }: CustomInputFieldProps) {
 
 export function CustomSwitchField({ label, ...props }: CustomInputFieldProps) {
   const [field, meta] = useField(props)
-  console.log(field)
   return (
     <FormControl isInvalid={(meta.error && meta.touched) as boolean}>
       <FormLabel htmlFor={props.name}>{label}</FormLabel>
@@ -50,10 +49,6 @@ export function CustomNumberInputField({
   ...props
 }: CustomInputFieldProps) {
   const [field, meta, helpers] = useField<number>(props)
-  // console.log(field)
-  // console.log(meta)
-  // console.log(helpers)
-  // console.log(props)
   return (
     <FormControl isInvalid={(meta.error && meta.touched) as boolean}>
       <FormLabel htmlFor={props.name}>{label}</FormLabel>

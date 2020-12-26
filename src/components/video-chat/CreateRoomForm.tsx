@@ -11,20 +11,21 @@ import {
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { useCreateRoomMutation } from '../../generated/graphql'
 import {
   CustomInputField,
   CustomNumberInputField,
   CustomSwitchField,
-} from './InputFields'
+} from '../shared/InputFields'
 import { v4 } from 'uuid'
 
 export default function CreateRoomForm() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [createRoom] = useCreateRoomMutation()
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
   return (
     <>
       <Button onClick={onOpen} colorScheme="blue" my={4}>
@@ -62,8 +63,7 @@ export default function CreateRoomForm() {
                 }),
             })}
             onSubmit={async (values, actions) => {
-              console.log(values)
-
+              setLoading(true)
               try {
                 const creatorKey = v4()
                 localStorage.setItem('video-chat-creatorKey', creatorKey)
@@ -82,7 +82,7 @@ export default function CreateRoomForm() {
                 } else {
                   alert(error.message)
                 }
-                actions.setSubmitting(false)
+                setLoading(false)
               }
             }}
           >
@@ -121,7 +121,7 @@ export default function CreateRoomForm() {
                   <Button mr={3} onClick={onClose}>
                     Cancel
                   </Button>
-                  <Button isLoading={props.isSubmitting} type="submit">
+                  <Button isLoading={loading} type="submit">
                     Submit
                   </Button>
                 </ModalFooter>
