@@ -1,12 +1,4 @@
-import {
-  Badge,
-  Box,
-  HStack,
-  Icon,
-  IconButton,
-  useColorModeValue,
-  VStack,
-} from '@chakra-ui/react'
+import { Box, HStack, useColorModeValue, VStack } from '@chakra-ui/react'
 import { useRouter } from 'next/dist/client/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
@@ -19,14 +11,13 @@ import { objectRemoveKey } from '../../../utils/objectFilter'
 import ChatMessages from '../../../components/video-chat/ChatMessages'
 import ChatInput from '../../../components/video-chat/ChatInput'
 import { DarkModeSwitch } from '../../../components/shared/DarkModeSwitch'
-import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons'
 import debounce from '../../../utils/debounce'
 import {
   sendChat,
   startScreenShare,
   stopScreenShare,
 } from '../../../utils/video-chat/functions'
-import { VscCircleFilled } from 'react-icons/vsc'
+import ChatOpenCloseButton from '../../../components/video-chat/ChatOpenCloseButton'
 
 export interface Message {
   text: string
@@ -90,7 +81,6 @@ export default function Room() {
 
   const userStreamRef = useRef<MediaStream | undefined>(undefined)
   const userScreenRef = useRef<MediaStream | undefined>(undefined)
-  const badgeRef = useRef<HTMLSpanElement>(null)
 
   console.log('Peers: ', peers.current)
 
@@ -319,65 +309,15 @@ export default function Room() {
             <ChatMessages messages={messages} />
             <ChatInput submit={sendChatCallback} />
           </VStack>
-          <Box pos="absolute" right="-40px" top="49%">
-            <IconButton
-              onClick={() => {
-                setOpen((prev) => !prev)
-                openRef.current = !openRef.current
-                // mark all messages to be read
-                if (openRef.current) {
-                  unreadMessagesRef.current = 0
-                  setNewUnreadMessage(null)
-                }
-              }}
-              aria-label="Search database"
-              colorScheme="gray"
-              zIndex={100}
-              icon={open ? <ArrowLeftIcon /> : <ArrowRightIcon />}
-            />
-            <Badge
-              ref={badgeRef}
-              colorScheme="red"
-              pos="absolute"
-              right={
-                badgeRef.current
-                  ? `${-badgeRef.current.clientWidth / 2}px`
-                  : '0px'
-              }
-              top={
-                badgeRef.current
-                  ? `${-badgeRef.current.clientHeight / 2}px`
-                  : '0px'
-              }
-              zIndex={101}
-            >
-              {unreadMessagesRef.current !== 0
-                ? unreadMessagesRef.current
-                : null}
-            </Badge>
-            <Box
-              pos="absolute"
-              left="100%"
-              top="50%"
-              ml={1}
-              borderRadius="lg"
-              overflow="hidden"
-              bg={bg}
-              pl={1}
-              pr={2}
-            >
-              {newUnreadMessage ? (
-                <Box maxW="sm" isTruncated>
-                  <Icon
-                    as={VscCircleFilled}
-                    color={newUnreadMessage.color}
-                    mb={1}
-                  />
-                  {newUnreadMessage!.text}
-                </Box>
-              ) : null}
-            </Box>
-          </Box>
+          <ChatOpenCloseButton
+            setOpen={setOpen}
+            openRef={openRef}
+            unreadMessagesRef={unreadMessagesRef}
+            setNewUnreadMessage={setNewUnreadMessage}
+            open={open}
+            newUnreadMessage={newUnreadMessage}
+            bg={bg}
+          />
         </Box>
         <OtherVideos streams={otherStreams} />
       </HStack>
