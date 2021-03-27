@@ -9,23 +9,18 @@ import useHasMounted from '../../utils/useHasMounted'
 export default function VideoChat() {
   const { loading, error, data } = useRoomsQuery()
   if (!useHasMounted()) return null
-  return (
-    <Flex justify="center" align="center" height="100vh">
-      Loading...
-    </Flex>
-  )
   if (loading)
     return (
-      <Text my="auto" textAlign="center" height="100%">
+      <Flex justify="center" align="center" height="100vh">
         Loading...
-      </Text>
+      </Flex>
     )
   if (error) {
     console.log(error)
     return (
-      <Text my="auto" textAlign="center" height="100%">
+      <Flex justify="center" align="center" height="100vh">
         Error!
-      </Text>
+      </Flex>
     )
   }
   // console.log(data)
