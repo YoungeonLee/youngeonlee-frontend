@@ -1,4 +1,4 @@
-import { Heading, Container, Center, Text, Flex } from '@chakra-ui/react'
+import { Heading, Container, Center, Flex } from '@chakra-ui/react'
 import { DarkModeSwitch } from '../../components/shared/DarkModeSwitch'
 import CreateRoomForm from '../../components/video-chat/CreateRoomForm'
 import Rooms from '../../components/video-chat/Rooms'
@@ -19,7 +19,7 @@ export default function VideoChat() {
     console.log(error)
     return (
       <Flex justify="center" align="center" height="100vh">
-        Error!
+        Loading...
       </Flex>
     )
   }
