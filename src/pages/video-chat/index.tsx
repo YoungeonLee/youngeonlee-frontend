@@ -1,4 +1,4 @@
-import { Heading, Container, Center } from '@chakra-ui/react'
+import { Heading, Container, Center, Text } from '@chakra-ui/react'
 import { DarkModeSwitch } from '../../components/shared/DarkModeSwitch'
 import CreateRoomForm from '../../components/video-chat/CreateRoomForm'
 import Rooms from '../../components/video-chat/Rooms'
@@ -9,10 +9,19 @@ import useHasMounted from '../../utils/useHasMounted'
 export default function VideoChat() {
   const { loading, error, data } = useRoomsQuery()
   if (!useHasMounted()) return null
-  if (loading) return <p>Loading...</p>
+  if (loading)
+    return (
+      <Text my="auto" textAlign="center">
+        Loading...
+      </Text>
+    )
   if (error) {
     console.log(error)
-    return <p>Error!</p>
+    return (
+      <Text my="auto" textAlign="center">
+        Error!
+      </Text>
+    )
   }
   // console.log(data)
 
