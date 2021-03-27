@@ -11,14 +11,14 @@ export default function VideoChat() {
   if (!useHasMounted()) return null
   if (loading)
     return (
-      <Text my="auto" textAlign="center">
+      <Text my="auto" textAlign="center" height="100%">
         Loading...
       </Text>
     )
   if (error) {
     console.log(error)
     return (
-      <Text my="auto" textAlign="center">
+      <Text my="auto" textAlign="center" height="100%">
         Error!
       </Text>
     )
