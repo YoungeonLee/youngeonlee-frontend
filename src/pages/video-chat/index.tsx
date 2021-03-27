@@ -9,6 +9,11 @@ import useHasMounted from '../../utils/useHasMounted'
 export default function VideoChat() {
   const { loading, error, data } = useRoomsQuery()
   if (!useHasMounted()) return null
+  return (
+    <Text my="auto" textAlign="center" height="100%">
+      Loading...
+    </Text>
+  )
   if (loading)
     return (
       <Text my="auto" textAlign="center" height="100%">
