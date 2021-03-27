@@ -104,6 +104,7 @@ export default function CreateRoomForm() {
                     type="number"
                     label="Max People"
                     min={2}
+                    max={5}
                   />
                   <CustomSwitchField
                     name="private"
