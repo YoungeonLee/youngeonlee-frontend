@@ -17,6 +17,7 @@ type CustomInputFieldProps = FieldHookConfig<any> & {
   isDisable?: boolean
   hide?: boolean
   min?: number
+  max?: number
 }
 
 export function CustomInputField({ label, ...props }: CustomInputFieldProps) {
@@ -57,6 +58,7 @@ export function CustomNumberInputField({
         id={props.name}
         onChange={(_, value) => helpers.setValue(value)}
         min={props.min}
+        max={props.max}
       >
         <NumberInputField />
         <NumberInputStepper>
