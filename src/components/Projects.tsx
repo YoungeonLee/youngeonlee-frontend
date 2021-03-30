@@ -11,7 +11,7 @@ export default function Projects() {
       <Wrap justify="center">
         <Project
           title="Video Chat"
-          description="Video call with multiple people using webrtc\nSupports: Group Call | Screen Sharing | Text Chat"
+          description="Video call with multiple people using webrtc \n Supports: Group Call | Screen Sharing | Text Chat"
           href="/video-chat"
         />
       </Wrap>
