@@ -1,6 +1,6 @@
 import { Avatar } from '@chakra-ui/avatar'
 import { Box } from '@chakra-ui/layout'
-import { Image } from 'next/image'
+import Image from 'next/image'
 
 export const Profile = () => {
   return (
