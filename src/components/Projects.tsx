@@ -11,7 +11,7 @@ export default function Projects() {
       <Wrap justify="center">
         <Project
           title="Video Chat"
-          description="Supports: Group Call | Screen Sharing | Text Chat"
+          description="Video call with multiple people using webrtc\nSupports: Group Call | Screen Sharing | Text Chat"
           href="/video-chat"
         />
       </Wrap>
@@ -32,7 +32,9 @@ function Project(props: ProjectProps) {
         <Box my={1} fontWeight="semibold" as="h4">
           {props.title}
         </Box>
-        <Box my={1}>{props.description}</Box>
+        <Box my={1} whiteSpace="pre-line">
+          {props.description}
+        </Box>
         <HStack justify="flex-end" my={1}>
           <NextLink href={props.href}>
             <Button my={1} as="a" colorScheme="blue">
