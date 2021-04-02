@@ -1,3 +1,3 @@
-website: https://youngeonlee.vercel.app/
+website: https://youngeonlee.vercel.app
 
 backend link: https://github.com/YoungeonLee/youngeonlee-backend
