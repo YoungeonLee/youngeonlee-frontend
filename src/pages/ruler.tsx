@@ -60,27 +60,23 @@ function Tick({
   setBreaks: Dispatch<SetStateAction<number[]>>
 }) {
   return (
-    <Box
-      width="4rem"
-      height="6rem"
-      position="relative"
-      flexShrink={0}
+    <Flex
+      width="1vw"
       bg="green.400"
+      height="6rem"
+      right="1vw"
+      zIndex={1}
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="flex-end"
     >
-      <Flex
-        width="4rem"
-        height="6rem"
-        position="absolute"
-        right="-2rem"
-        zIndex={1}
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="flex-end"
-        onClick={() => setBreaks((prev) => [...prev, tick + 1])}
-      >
-        <Box textColor="white">{tick}</Box>
-        <Box bg="white" width="0.75rem" height="2.75rem" />
-      </Flex>
-    </Box>
+      {/* <Box textColor="white">{tick}</Box> */}
+      <Box
+        bg="white"
+        width="0.1vw"
+        height="2.75rem"
+        onClick={() => setBreaks((prev) => [...prev, tick].sort())}
+      />
+    </Flex>
   )
 }
