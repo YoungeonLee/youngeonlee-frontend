@@ -17,6 +17,8 @@ import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 type FamilyType = '남편' | '아내' | '아들' | '딸'
 type Family = { id: string; type: FamilyType; age: number }[]
 
+const yearlyNeededMoney = 3600
+
 export default function Ruler() {
   const [currentAge, setCurrentAge] = useState(100)
   const [retireAge, setRetireAge] = useState(100)
@@ -36,8 +38,9 @@ export default function Ruler() {
   const lengths = [currentAge, myAgeAtRetire - currentAge, 100 - myAgeAtRetire]
   const longest = Math.max(...lengths)
   const tickW = 80 / longest
+  const thridLength = 100 - myAgeAtRetire
   return (
-    <Box w="100vw" h="100vh">
+    <Box w="100vw" h="100vh" fontWeight={600}>
       <Flex>
         <AgeInput
           state={currentAge}
@@ -97,7 +100,9 @@ export default function Ruler() {
         tickW={tickW}
       />
       <Flex>
-        <Box whiteSpace="pre-line">{futureTexts}</Box>
+        <Box whiteSpace="pre-line" padding="1rem">
+          {futureTexts}
+        </Box>
         <iframe
           width="560"
           height="315"
@@ -107,6 +112,18 @@ export default function Ruler() {
           allowFullScreen
         />
       </Flex>
+      <Box
+        position="absolute"
+        right={0}
+        bottom={0}
+        whiteSpace="pre-line"
+        padding="1rem"
+      >
+        {`수입없이 살아야 할 남은기간: ${thridLength}년
+        1년 ${yearlyNeededMoney} x ${thridLength}년 = ${moneyNeededForYears(
+          thridLength
+        )}`}
+      </Box>
     </Box>
   )
 }
@@ -344,3 +361,8 @@ const futureTexts = `미래수업 => 평균수명 120세 시대가 온다
 미래학자 안네리세키에르: 2030년
 유전학자 스티브 호바스: 2050년
 레이커즈와일: 2045년`
+
+const moneyNeededForYears = (years: number) => {
+  const money = (years * yearlyNeededMoney).toString()
+  return `${money.slice(0, -4)}억 ${money.slice(-4)}`
+}
