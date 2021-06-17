@@ -39,11 +39,19 @@ export default function Ruler() {
   return (
     <Box w="100vw" h="100vh">
       <Flex>
-        <AgeInput state={currentAge} setState={setCurrentAge} min={1} />
+        <AgeInput
+          state={currentAge}
+          setState={setCurrentAge}
+          min={1}
+          label="현재 나이"
+          w="5rem"
+        />
         <AgeInput
           state={retireAge}
           setState={setRetireAge}
           min={currentAge + 1}
+          label="퇴직 나이"
+          w="5rem"
         />
       </Flex>
       <Flex>
@@ -88,6 +96,7 @@ export default function Ruler() {
         setBreaks={() => {}}
         tickW={tickW}
       />
+      <Box whiteSpace="pre-line">{futureTexts}</Box>
     </Box>
   )
 }
@@ -97,26 +106,31 @@ function AgeInput({
   setState,
   min,
   w,
+  label,
 }: {
   state: number
   setState: Dispatch<SetStateAction<number>>
   min: number
+  label?: string
   w?: number | string
 }) {
   return (
-    <NumberInput
-      w={w}
-      min={min}
-      max={99}
-      value={state}
-      onChange={(_, value) => setState(value)}
-    >
-      <NumberInputField />
-      <NumberInputStepper>
-        <NumberIncrementStepper />
-        <NumberDecrementStepper />
-      </NumberInputStepper>
-    </NumberInput>
+    <Flex alignItems="center" padding="1rem">
+      <Box marginRight="1rem">{label}</Box>
+      <NumberInput
+        w={w}
+        min={min}
+        max={99}
+        value={state}
+        onChange={(_, value) => setState(value)}
+      >
+        <NumberInputField />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
+    </Flex>
   )
 }
 
@@ -302,7 +316,7 @@ const computeColor = (tick: number) => {
   } else if (tick < 41) {
     return 'yellow.400'
   } else if (tick < 51) {
-    return 'oragne.300'
+    return 'orange.300'
   } else if (tick < 61) {
     return 'orange.600'
   } else if (tick < 71) {
@@ -315,3 +329,8 @@ const computeColor = (tick: number) => {
     return 'purple.300'
   }
 }
+
+const futureTexts = `미래수업 => 평균수명 120세 시대가 온다
+미래학자 안네리세키에르: 2030년
+유전학자 스티브 호바스: 2050년
+레이커즈와일: 2045년`
