@@ -43,6 +43,7 @@ export default function Ruler() {
   const longest = Math.max(...lengths)
   const tickW = 80 / longest
   const thridLength = 100 - myAgeAtRetire
+  const formComplete = currentAge !== 100 && retireAge !== 100
   return (
     <Box w="100vw" h="100vh" fontWeight={600}>
       <Flex alignItems="center">
@@ -94,11 +95,13 @@ export default function Ruler() {
         />
         <Box position="relative">
           <Box w="20vw" padding="1rem" position="absolute">
-            <FamilyInfo
-              currentAge={currentAge}
-              family={family}
-              offset={myAgeAtRetire - currentAge}
-            />
+            {formComplete ? (
+              <FamilyInfo
+                currentAge={currentAge}
+                family={family}
+                offset={myAgeAtRetire - currentAge}
+              />
+            ) : null}
           </Box>
         </Box>
       </Flex>
@@ -109,11 +112,12 @@ export default function Ruler() {
           setBreaks={() => {}}
           tickW={tickW}
         />
-        <Box w="20vw" whiteSpace="pre-line" padding="1rem">
-          {`수입없이 살아야 할 남은기간: ${thridLength}년
+        {formComplete ? (
+          <Box w="20vw" whiteSpace="pre-line" padding="1rem">
+            {`수입없이 살아야 할 남은기간: ${thridLength}년
         1년 ${yearlyNeededMoney} x ${thridLength}년 = ${moneyNeededForYears(
-            thridLength
-          )}
+              thridLength
+            )}
         ${
           show
             ? `1년 ${yearlyNeededMoney} x ${
@@ -121,29 +125,32 @@ export default function Ruler() {
               }년 = ${moneyNeededForYears(thridLength + 20)}`
             : ''
         }`}
-        </Box>
+          </Box>
+        ) : null}
       </Flex>
       <Flex display={show ? 'flex' : 'none'}>
         <Box whiteSpace="pre-line" padding="1rem">
           {futureTexts}
         </Box>
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/BMnsvH_BBBU"
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
+        <Box position="relative">
+          <Box position="absolute">
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/BMnsvH_BBBU"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </Box>
+        </Box>
       </Flex>
-      <Box position="absolute" right={0} bottom={0}>
-        <Draggable handle=".handle">
-          <Flex>
-            <Box className="handle" bg="gray.400" w="1rem" borderRadius={5} />
-            <Textarea resize="both" w="10rem" h="10rem" />
-          </Flex>
-        </Draggable>
-      </Box>
+      <Draggable handle=".handle">
+        <Flex padding="1rem">
+          <Box className="handle" bg="red.400" w="1rem" borderRadius={5} />
+          <Textarea resize="both" w="10rem" h="10rem" borderColor="red.400" />
+        </Flex>
+      </Draggable>
     </Box>
   )
 }
