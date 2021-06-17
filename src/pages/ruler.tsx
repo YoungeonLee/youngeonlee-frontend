@@ -11,6 +11,7 @@ import {
   IconButton,
   RadioGroup,
   Radio,
+  Switch,
 } from '@chakra-ui/react'
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 
@@ -24,6 +25,7 @@ export default function Ruler() {
   const [retireAge, setRetireAge] = useState(100)
   const [family, setFamily] = useState<Family>([])
   const [selected, setSelected] = useState('me')
+  const [show, setShow] = useState(false)
   let myAgeAtRetire: number
   if (selected === 'me') {
     myAgeAtRetire = retireAge
@@ -41,7 +43,7 @@ export default function Ruler() {
   const thridLength = 100 - myAgeAtRetire
   return (
     <Box w="100vw" h="100vh" fontWeight={600}>
-      <Flex>
+      <Flex alignItems="center">
         <AgeInput
           state={currentAge}
           setState={setCurrentAge}
@@ -56,6 +58,7 @@ export default function Ruler() {
           label="퇴직 나이"
           w="5rem"
         />
+        <Switch onChange={() => setShow((prev) => !prev)} />
       </Flex>
       <Flex>
         <Ticks
@@ -93,13 +96,28 @@ export default function Ruler() {
           />
         </Box>
       </Flex>
-      <Ticks
-        start={myAgeAtRetire + 1}
-        end={101}
-        setBreaks={() => {}}
-        tickW={tickW}
-      />
       <Flex>
+        <Ticks
+          start={myAgeAtRetire + 1}
+          end={101}
+          setBreaks={() => {}}
+          tickW={tickW}
+        />
+        <Box w="20vw" whiteSpace="pre-line" padding="1rem">
+          {`수입없이 살아야 할 남은기간: ${thridLength}년
+        1년 ${yearlyNeededMoney} x ${thridLength}년 = ${moneyNeededForYears(
+            thridLength
+          )}
+        ${
+          show
+            ? `1년 ${yearlyNeededMoney} x ${
+                thridLength + 20
+              }년 = ${moneyNeededForYears(thridLength + 20)}`
+            : ''
+        }`}
+        </Box>
+      </Flex>
+      <Flex display={show ? 'flex' : 'none'}>
         <Box whiteSpace="pre-line" padding="1rem">
           {futureTexts}
         </Box>
@@ -112,18 +130,6 @@ export default function Ruler() {
           allowFullScreen
         />
       </Flex>
-      <Box
-        position="absolute"
-        right={0}
-        bottom={0}
-        whiteSpace="pre-line"
-        padding="1rem"
-      >
-        {`수입없이 살아야 할 남은기간: ${thridLength}년
-        1년 ${yearlyNeededMoney} x ${thridLength}년 = ${moneyNeededForYears(
-          thridLength
-        )}`}
-      </Box>
     </Box>
   )
 }
