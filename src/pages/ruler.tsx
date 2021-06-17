@@ -274,9 +274,11 @@ function FamilyInfo({
   return (
     <Box>
       <RadioGroup onChange={setSelected} value={selected}>
-        <Box>{selected ? <Radio value="me">{myAge}</Radio> : myAge}</Box>
+        <Box whiteSpace="nowrap">
+          {selected ? <Radio value="me">{myAge}</Radio> : myAge}
+        </Box>
         {family.map(({ id, type, age }) => (
-          <Flex key={id}>
+          <Flex key={id} whiteSpace="nowrap">
             {selected ? (
               <Radio value={id}>{`${type}: ${age + offset}세`}</Radio>
             ) : (
