@@ -12,8 +12,10 @@ import {
   RadioGroup,
   Radio,
   Switch,
+  Textarea,
 } from '@chakra-ui/react'
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
+import Draggable from 'react-draggable'
 
 type FamilyType = '남편' | '아내' | '아들' | '딸'
 type Family = { id: string; type: FamilyType; age: number }[]
@@ -130,6 +132,12 @@ export default function Ruler() {
           allowFullScreen
         />
       </Flex>
+      <Draggable handle=".handle">
+        <Flex>
+          <Box className="handle" bg="gray.400" w="1rem" borderRadius={5} />
+          <Textarea resize="both" w="10rem" h="10rem" />
+        </Flex>
+      </Draggable>
     </Box>
   )
 }
