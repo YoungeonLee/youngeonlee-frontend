@@ -71,7 +71,7 @@ export default function Ruler() {
           tickW={tickW}
         />
         <Box position="relative">
-          <Box w="20vw" padding="1rem" position="absolute">
+          <Box padding="1rem" position="absolute">
             <FamilyInput
               selected={selected}
               setSelected={setSelected}
@@ -94,7 +94,7 @@ export default function Ruler() {
           tickW={tickW}
         />
         <Box position="relative">
-          <Box w="20vw" padding="1rem" position="absolute">
+          <Box padding="1rem" position="absolute">
             {formComplete ? (
               <FamilyInfo
                 currentAge={currentAge}
@@ -113,7 +113,7 @@ export default function Ruler() {
           tickW={tickW}
         />
         {formComplete ? (
-          <Box w="20vw" whiteSpace="pre-line" padding="1rem">
+          <Box whiteSpace="pre-line" padding="1rem">
             {`수입없이 살아야 할 남은기간: ${thridLength}년
         1년 ${yearlyNeededMoney} x ${thridLength}년 = ${moneyNeededForYears(
               thridLength
