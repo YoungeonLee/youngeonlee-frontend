@@ -69,18 +69,20 @@ export default function Ruler() {
           setBreaks={() => {}}
           tickW={tickW}
         />
-        <Box w="20vw" padding="1rem">
-          <FamilyInput
-            selected={selected}
-            setSelected={setSelected}
-            currentAge={currentAge}
-            family={family}
-            familyMemberAge={familyMemberAge}
-            familyMemberType={familyMemberType}
-            setFamily={setFamily}
-            setFamilyMemberAge={setFamilyMemberAge}
-            setFamilyMemberType={setFamilyMemberType}
-          />
+        <Box position="relative">
+          <Box w="20vw" padding="1rem" position="absolute">
+            <FamilyInput
+              selected={selected}
+              setSelected={setSelected}
+              currentAge={currentAge}
+              family={family}
+              familyMemberAge={familyMemberAge}
+              familyMemberType={familyMemberType}
+              setFamily={setFamily}
+              setFamilyMemberAge={setFamilyMemberAge}
+              setFamilyMemberType={setFamilyMemberType}
+            />
+          </Box>
         </Box>
       </Flex>
       <Flex>
@@ -90,12 +92,14 @@ export default function Ruler() {
           setBreaks={() => {}}
           tickW={tickW}
         />
-        <Box w="20vw" padding="1rem">
-          <FamilyInfo
-            currentAge={currentAge}
-            family={family}
-            offset={myAgeAtRetire - currentAge}
-          />
+        <Box position="relative">
+          <Box w="20vw" padding="1rem" position="absolute">
+            <FamilyInfo
+              currentAge={currentAge}
+              family={family}
+              offset={myAgeAtRetire - currentAge}
+            />
+          </Box>
         </Box>
       </Flex>
       <Flex>
@@ -132,12 +136,14 @@ export default function Ruler() {
           allowFullScreen
         />
       </Flex>
-      <Draggable handle=".handle">
-        <Flex>
-          <Box className="handle" bg="gray.400" w="1rem" borderRadius={5} />
-          <Textarea resize="both" w="10rem" h="10rem" />
-        </Flex>
-      </Draggable>
+      <Box position="absolute" right={0} bottom={0}>
+        <Draggable handle=".handle">
+          <Flex>
+            <Box className="handle" bg="gray.400" w="1rem" borderRadius={5} />
+            <Textarea resize="both" w="10rem" h="10rem" />
+          </Flex>
+        </Draggable>
+      </Box>
     </Box>
   )
 }
