@@ -96,7 +96,17 @@ export default function Ruler() {
         setBreaks={() => {}}
         tickW={tickW}
       />
-      <Box whiteSpace="pre-line">{futureTexts}</Box>
+      <Flex>
+        <Box whiteSpace="pre-line">{futureTexts}</Box>
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/BMnsvH_BBBU"
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </Flex>
     </Box>
   )
 }
