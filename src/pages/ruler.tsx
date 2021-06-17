@@ -9,6 +9,8 @@ import {
   NumberDecrementStepper,
   Select,
   IconButton,
+  RadioGroup,
+  Radio,
 } from '@chakra-ui/react'
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 
@@ -19,10 +21,19 @@ export default function Ruler() {
   const [currentAge, setCurrentAge] = useState(100)
   const [retireAge, setRetireAge] = useState(100)
   const [family, setFamily] = useState<Family>([])
-  console.log(family)
+  const [selected, setSelected] = useState('me')
+  let myAgeAtRetire: number
+  if (selected === 'me') {
+    myAgeAtRetire = retireAge
+  } else {
+    const moneyMaker = family.find(({ id }) => id === selected)!
+    const timeUntilRetire = retireAge - moneyMaker.age
+    myAgeAtRetire = currentAge + timeUntilRetire
+  }
+  // const myAgeAtRetire = selected === 'me' ? retireAge : currentAge + family.find(({id})=>id === selected)
   const [familyMemberAge, setFamilyMemberAge] = useState(100)
   const [familyMemberType, setFamilyMemberType] = useState<FamilyType>('남편')
-  const lengths = [currentAge, retireAge - currentAge, 100 - retireAge]
+  const lengths = [currentAge, myAgeAtRetire - currentAge, 100 - myAgeAtRetire]
   const longest = Math.max(...lengths)
   const tickW = 80 / longest
   return (
@@ -44,6 +55,8 @@ export default function Ruler() {
         />
         <Box w="20vw" padding="1rem">
           <FamilyInput
+            selected={selected}
+            setSelected={setSelected}
             currentAge={currentAge}
             family={family}
             familyMemberAge={familyMemberAge}
@@ -57,7 +70,7 @@ export default function Ruler() {
       <Flex>
         <Ticks
           start={currentAge + 1}
-          end={retireAge + 1}
+          end={myAgeAtRetire + 1}
           setBreaks={() => {}}
           tickW={tickW}
         />
@@ -65,12 +78,12 @@ export default function Ruler() {
           <FamilyInfo
             currentAge={currentAge}
             family={family}
-            offset={retireAge - currentAge}
+            offset={myAgeAtRetire - currentAge}
           />
         </Box>
       </Flex>
       <Ticks
-        start={retireAge + 1}
+        start={myAgeAtRetire + 1}
         end={101}
         setBreaks={() => {}}
         tickW={tickW}
@@ -115,6 +128,8 @@ function FamilyInput({
   setFamilyMemberType,
   familyMemberAge,
   setFamilyMemberAge,
+  selected,
+  setSelected,
 }: {
   currentAge: number
   family: Family
@@ -123,11 +138,14 @@ function FamilyInput({
   setFamilyMemberType: Dispatch<SetStateAction<FamilyType>>
   familyMemberAge: number
   setFamilyMemberAge: Dispatch<SetStateAction<number>>
+  selected: string
+  setSelected: Dispatch<SetStateAction<string>>
 }) {
   return (
     <Box>
       <FamilyInfo
-        input
+        selected={selected}
+        setSelected={setSelected}
         currentAge={currentAge}
         family={family}
         setFamily={setFamily}
@@ -173,34 +191,43 @@ function FamilyInfo({
   currentAge,
   family,
   setFamily,
-  input,
+  selected,
+  setSelected,
   offset = 0,
 }: {
   currentAge: number
   family: Family
   setFamily?: Dispatch<SetStateAction<Family>>
-  input?: boolean
+  selected?: string
+  setSelected?: Dispatch<SetStateAction<string>>
   offset?: number
 }) {
+  const myAge = `나: ${currentAge + offset}세`
   return (
     <Box>
-      <Box>나: {currentAge + offset}세</Box>
-      {family.map(({ id, type, age }) => (
-        <Flex key={id}>
-          <Box>{`${type}: ${age + offset}세`}</Box>
-          {input ? (
-            <IconButton
-              marginX="0.3rem"
-              size="1rem"
-              aria-label="remove family member"
-              icon={<MinusIcon />}
-              onClick={() =>
-                setFamily!((prev) => prev.filter((value) => value.id !== id))
-              }
-            />
-          ) : null}
-        </Flex>
-      ))}
+      <RadioGroup onChange={setSelected} value={selected}>
+        <Box>{selected ? <Radio value="me">{myAge}</Radio> : myAge}</Box>
+        {family.map(({ id, type, age }) => (
+          <Flex key={id}>
+            {selected ? (
+              <Radio value={id}>{`${type}: ${age + offset}세`}</Radio>
+            ) : (
+              `${type}: ${age + offset}세`
+            )}
+            {setFamily ? (
+              <IconButton
+                marginX="0.3rem"
+                size="1rem"
+                aria-label="remove family member"
+                icon={<MinusIcon />}
+                onClick={() =>
+                  setFamily((prev) => prev.filter((value) => value.id !== id))
+                }
+              />
+            ) : null}
+          </Flex>
+        ))}
+      </RadioGroup>
     </Box>
   )
 }
@@ -242,7 +269,7 @@ function Tick({
   return (
     <Flex
       width={`${tickW}vw`}
-      bg="green.400"
+      bg={computeColor(tick)}
       height="4rem"
       right={`${tickW}vw"`}
       flexDirection="column"
@@ -263,4 +290,28 @@ function Tick({
       />
     </Flex>
   )
+}
+
+const computeColor = (tick: number) => {
+  if (tick < 11) {
+    return 'green.300'
+  } else if (tick < 21) {
+    return 'green.500'
+  } else if (tick < 31) {
+    return 'green.700'
+  } else if (tick < 41) {
+    return 'yellow.400'
+  } else if (tick < 51) {
+    return 'oragne.300'
+  } else if (tick < 61) {
+    return 'orange.600'
+  } else if (tick < 71) {
+    return 'yellow.800'
+  } else if (tick < 81) {
+    return 'yellow.600'
+  } else if (tick < 91) {
+    return 'pink.700'
+  } else {
+    return 'purple.300'
+  }
 }
